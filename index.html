@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى وعدي ❤️</title>
+    <style>
+        /* استيراد الخطوط */
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Great+Vibes&family=Cairo:wght@400;700&display=swap');
+
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #c9184a;
+            --soft-pink: #fce0e6;
+        }
+
+        body {
+            margin: 0; padding: 0; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #fce0e6 0%, #e0e6fc 100%); 
+            font-family: 'Cairo', sans-serif; 
+            overflow-x: hidden; position: relative;
+        }
+
+        /* حاوية القلوب الخلفية */
+        #hearts-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            overflow: hidden; opacity: 0.5; z-index: 1; pointer-events: none;
+        }
+
+        /* شاشة الدخول */
+        #login-screen {
+            text-align: center; background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(10px); padding: 40px; border-radius: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 10;
+            max-width: 400px; width: 85%; border: 1px solid rgba(255, 255, 255, 0.5); 
+        }
+
+        h1 { color: var(--secondary); font-family: 'Amiri', serif; font-size: 32px; margin-bottom: 20px; }
+        input { padding: 12px; border-radius: 50px; border: 2px solid #ffb7b2; outline: none; font-size: 16px; text-align: center; width: 80%; margin-bottom: 10px; }
+        .btn-main { background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none; padding: 12px 35px; border-radius: 50px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; box-shadow: 0 5px 15px rgba(201, 24, 74, 0.2); }
+
+        /* المحتوى الرئيسي */
+        #main-content {
+            display: none; text-align: center; z-index: 10; background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(12px); padding: 30px 15px; border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 550px; width: 90%; 
+            max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .welcome-text { font-family: 'Great Vibes', cursive; font-size: 55px; color: var(--secondary); margin-bottom: 10px; }
+        
+        /* العداد التنازلي */
+        .countdown-box {
+            margin: 25px 0; padding: 20px 10px; border-radius: 20px; 
+            background: rgba(255, 255, 255, 0.5); border: 1px solid var(--soft-pink);
+        }
+        .timer-display { display: flex; justify-content: center; gap: 10px; }
+        .timer-unit { background: white; padding: 10px; border-radius: 15px; min-width: 60px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .timer-unit span { display: block; font-size: 28px; color: var(--primary); font-weight: bold; }
+        .timer-unit label { font-size: 12px; color: #888; }
+
+        /* مشغل الأغاني */
+        .player-card {
+            background: white; padding: 20px; border-radius: 25px; margin: 15px 0;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            border: 1px solid #eee;
+        }
+        .wassouf-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--soft-pink); cursor: pointer; }
+
+        /* أنيميشن القلب الطائر */
+        .heart { position: absolute; background-color: var(--soft-pink); height: 20px; width: 20px; transform: rotate(-45deg); animation: float 6s linear infinite; }
+        .heart:before, .heart:after { content: ""; background-color: var(--soft-pink); border-radius: 50%; height: 20px; position: absolute; width: 20px; }
+        .heart:before { top: -10px; left: 0; }
+        .heart:after { left: 10px; top: 0; }
+        @keyframes float { 0% { transform: translateY(100vh) rotate(-45deg); opacity: 1; } 100% { transform: translateY(-10vh) rotate(-45deg); opacity: 0; } }
+
+        /* مودال الرسالة "الرايق" */
+        #message-modal {
+            display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; 
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background: linear-gradient(to bottom, #ffffff, #fff0f3); margin: 15% auto; padding: 30px; 
+            border-radius: 30px; width: 85%; max-width: 450px; position: relative; 
+            border: 2px solid var(--primary); box-shadow: 0 15px 50px rgba(255, 77, 109, 0.3); text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hearts-container"></div>
+
+    <div id="login-screen">
+        <h1>🔐 سر لا يفتح إلا بالحب</h1>
+        <p style="font-weight: 600;">اكتبي كلمة السر للدخول يا أحلى وعد ❤️</p>
+        <input type="password" id="passInput" placeholder="كلمة السر">
+        <br>
+        <button class="btn-main" onclick="checkPass()">دخول</button>
+        <p id="error-msg" style="display:none; color:#dc3545; margin-top: 15px; font-weight: bold;">كلمة السر غلط يا وعودي 😉</p>
+    </div>
+
+    <div id="main-content">
+        <div class="welcome-text">وعد ❤️</div>
+        <p style="font-weight: 700; color: #555;">كل الحب ليكي يا أغلى من روحي</p>
+        
+        <div class="countdown-box">
+            <h3 style="color: var(--secondary); margin-bottom: 15px; font-size: 18px;">🎉 فاضل كام على يوم ميلادك (11/11)؟</h3>
+            <div class="timer-display">
+                <div class="timer-unit"><span id="days">00</span><label>أيام</label></div>
+                <div class="timer-unit"><span id="hours">00</span><label>ساعات</label></div>
+                <div class="timer-unit"><span id="minutes">00</span><label>دقائق</label></div>
+                <div class="timer-unit"><span id="seconds">00</span><label>ثواني</label></div>
+            </div>
+        </div>
+
+        <div class="player-card">
+            <p style="font-weight: bold; color: var(--secondary);">🎙️ اغنيه من اختيارك </p>
+            <img src="images.jpg" class="wassouf-img" onclick="toggleSong('ourSong', 'musicBtn')" alt="Song 1">
+            <audio id="ourSong" loop><source src="7603858649636637462.mp3" type="audio/mp3"></audio>
+            <button class="btn-main" id="musicBtn" onclick="toggleSong('ourSong', 'musicBtn')" style="padding: 8px 25px; font-size: 14px;">تشغيل ▶️</button>
+        </div>
+
+        <div class="player-card">
+            <p style="font-weight: bold; color: var(--secondary);">🎙️  اغنيه من اختياري</p>
+            <img src="image1.jpg" class="wassouf-img" onclick="toggleSong('secondSong', 'musicBtn2')" alt="Song 2">
+            <audio id="secondSong" loop><source src="7458043830038776577.mp3" type="audio/mp3"></audio>
+            <button class="btn-main" id="musicBtn2" onclick="toggleSong('secondSong', 'musicBtn2')" style="padding: 8px 25px; font-size: 14px;">تشغيل ▶️</button>
+        </div>
+
+        <button class="btn-main" onclick="showMsg()">💌 رسالة خاصة من قلبي</button>
+        
+        <footer style="margin-top: 30px; font-size: 12px; opacity: 0.6; font-weight: bold;">صُنع بكل حب ليكي يا وعودي ✨</footer>
+    </div>
+
+    <div id="message-modal">
+        <div class="modal-content">
+            <span onclick="hideMsg()" style="float: left; font-size: 30px; cursor: pointer; color: var(--primary);">&times;</span>
+            <div style="font-size: 40px; margin-bottom: 10px;">💌</div>
+            <h2 style="color: var(--secondary); font-family: 'Amiri', serif; margin-bottom: 20px;">إلى وعدي الغالية ❤️</h2>
+            <p style="font-size: 19px; line-height: 1.8; color: #800e2c; font-weight: 600;">
+                حابب أعرفك يا وعودي إنك <span style="color: var(--primary);">أحسن حاجة حصلتلي في حياتي</span>.. ❤️ 
+                <br><br>
+                إنتي الهدية اللي عمري ما توقعتها 🎁، وإنتي الأمان اللي بدور عليه طول عمري.. ✨
+                <br><br>
+                ربنا يخليكي ليا وما يحرمني من وجودك أبداً يا أغلى من روحي. ❤️🥰
+            </p>
+            <button class="btn-main" onclick="hideMsg()" style="width: 100%; margin-top: 20px;">إغلاق ❤️</button>
+        </div>
+    </div>
+
+    <script>
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            for(let i=0; i<15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = (Math.random() * 3 + 5) + "s";
+                heart.style.opacity = Math.random();
+                container.appendChild(heart);
+            }
+        }
+
+        function startTimer() {
+            const target = new Date();
+            target.setMonth(10); target.setDate(11); target.setHours(0, 0, 0, 0);
+            if (new Date() > target) target.setFullYear(target.getFullYear() + 1);
+
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target.getTime() - now;
+                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000);
+            }, 1000);
+        }
+
+        function checkPass() {
+            const input = document.getElementById("passInput").value;
+            if(input.toLowerCase() === "love") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("main-content").style.display = "block";
+                createHearts();
+                startTimer();
+            } else {
+                document.getElementById("error-msg").style.display = "block";
+            }
+        }
+
+        // دالة التشغيل المحدثة للأغنيتين
+        function toggleSong(songId, btnId) {
+            const song = document.getElementById(songId);
+            const btn = document.getElementById(btnId);
+            
+            // قائمة بكل الأغاني والزراير
+            const allSongs = ['ourSong', 'secondSong'];
+            const allBtns = ['musicBtn', 'musicBtn2'];
+
+            // إيقاف أي أغنية تانية شغالة
+            allSongs.forEach((id, index) => {
+                if (id !== songId) {
+                    const otherSong = document.getElementById(id);
+                    const otherBtn = document.getElementById(allBtns[index]);
+                    otherSong.pause();
+                    otherBtn.innerText = "تشغيل ▶️";
+                }
+            });
+
+            if(song.paused) {
+                song.play();
+                btn.innerText = "إيقاف ⏸️";
+            } else {
+                song.pause();
+                btn.innerText = "تشغيل ▶️";
+            }
+        }
+
+        function showMsg() { document.getElementById("message-modal").style.display = "block"; }
+        function hideMsg() { document.getElementById("message-modal").style.display = "none"; }
+    </script>
+</body>
+</html>
